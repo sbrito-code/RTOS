@@ -1,0 +1,210 @@
+ARM GAS  src/kernel/startup.s 			page 1
+
+
+   1              	/**
+   2              	 * Archivo: startup.S
+   3              	 * Función: Realiza la inicialización básica del uP:
+   4              	 *          - Setea los modos de funcionamiento del uP,
+   5              	 *          - Prepara el stack,
+   6              	 *          - Habilita los distintos coprocesadores,
+   7              	 *          - Salta hacia main.c
+   8              	 * Autor: Brito Sergio Sebastian
+   9              	 * Referencia: los códigos desarrollados fueron tomados a partir de diferentes referencias y en ba
+  10              	 *             fue darle un enfoque didáctico para el alumno, con comentarios pertinentes y refere
+  11              	 *             Ref. 1: https://github.com/allexoll/BBB-BareMetal
+  12              	 *             Ref. 2: https://github.com/auselen/down-to-the-bone
+  13              	 *             Ref. 3: https://github.com/mvduin/bbb-asm-demo
+  14              	 *             Ref. 4: Starterware de Texas Instruments
+  15              	 *             Ref. 5: AM335x ARM Cortex-A8 - Technical Reference Manual 
+  16              	 *             Ref. 6: ARM Architectural Reference Manual ARMv7-A and ARMv7-R Edition (ARM)
+  17              	 *             Ref. 7: Instruction Set Assembly Guide for ARMv7 and earlier ARM Architectures (Vers
+  18              	 **/
+  19              	
+  20              	/* Referencias a funciones externas */
+  21              	
+  22              	.extern _irq_enable
+  23              	.extern _irq_disable
+  24              	.extern _UART_init
+  25              	.extern init_board
+  26              	.extern main
+  27              	
+  28              	.extern UND_Handler
+  29              	.extern SVC_Handler
+  30              	.extern PREF_Handler
+  31              	.extern ABT_Handler
+  32              	.extern IRQ_Handler
+  33              	.extern FIQ_Handler
+  34              	
+  35              	.global _startup
+  36              	
+  37              	/* Referencia a variables o simbolos externos */
+  38              	.extern _ISR_VECTORS_BASE
+  39              	.extern __isr_table_start__
+  40              	
+  41              	.extern _startup
+  42              	.extern __bss_start
+  43              	.extern __bss_end
+  44              	
+  45              	
+  46              	.extern __irq_stack_top__
+  47              	.extern __fiq_stack_top__ 
+  48              	.extern __svc_stack_top__
+  49              	.extern __abt_stack_top__
+  50              	.extern __und_stack_top__    
+  51              	.extern __sys_stack_top__ 
+  52              	
+  53              	
+  54              	/* Tamaños en Public RAM */
+  55              	.equ _PUB_RAM_SYS_STACK_SIZE, 256
+  56              	.equ _PUB_RAM_IRQ_STACK_SIZE, 256
+  57              	.equ _PUB_RAM_FIQ_STACK_SIZE, 8
+ARM GAS  src/kernel/startup.s 			page 2
+
+
+  58              	.equ _PUB_RAM_SVC_STACK_SIZE, 8
+  59              	.equ _PUB_RAM_ABT_STACK_SIZE, 8
+  60              	.equ _PUB_RAM_UND_STACK_SIZE, 8
+  61              	
+  62              	/* 
+  63              	 Definimos bits del CPSR para los diferentes modos
+  64              	   
+  65              	 CPSR: Current Program Status Register - Ver ARM B1
+  66              	 El SPSR posee la misma estructura que el CPSR, solo que se refiere al
+  67              	 "Saved Program Status Register".
+  68              	 */
+  69              	
+  70              	.equ USR_MODE, 0x10    /* USER       - Encoding segun ARM B1.3.1 (pag. B1-1139): 10000 - Bits 4:0 d
+  71              	.equ FIQ_MODE, 0x11    /* FIQ        - Encoding segun ARM B1.3.1 (pag. B1-1139): 10001 - Bits 4:0 d
+  72              	.equ IRQ_MODE, 0x12    /* IRQ        - Encoding segun ARM B1.3.1 (pag. B1-1139): 10010 - Bits 4:0 d
+  73              	.equ SVC_MODE, 0x13    /* Supervisor - Encoding segun ARM B1.3.1 (pag. B1-1139): 10011 - Bits 4:0 d
+  74              	.equ ABT_MODE, 0x17    /* Abort      - Encoding segun ARM B1.3.1 (pag. B1-1139): 10111 - Bits 4:0 d
+  75              	.equ UND_MODE, 0x1B    /* Undefined  - Encoding segun ARM B1.3.1 (pag. B1-1139): 11011 - Bits 4:0 d
+  76              	.equ SYS_MODE, 0x1F    /* System     - Encoding segun ARM B1.3.1 (pag. B1-1139): 11111 - Bits 4:0 d
+  77              	.equ I_BIT,    0x80    /* Mask bit I - Encoding segun ARM B1.3.3 (pag. B1-1149) - Bit 7 del CPSR */
+  78              	.equ F_BIT,    0x40    /* Mask bit F - Encoding segun ARM B1.3.3 (pag. B1-1149) - Bit 6 del CPSR */
+  79              	
+  80              	/* Modo de funcionamiento: arm */
+  81              	.code 32
+  82              	
+  83              	/* Hasta este momento, no hay nada inicializado */
+  84              	.section ._start_code
+  85              	_startup:
+  86 0000 A0009FE5 	    LDR R0,=__isr_table_start__
+  87              	
+  88 0004 A0109FE5 	    LDR R1, =_startup
+  89 0008 201080E5 	    STR R1, [R0,#0x20]
+  90              	
+  91 000c 9C109FE5 	    LDR R1, =UND_Handler
+  92 0010 241080E5 	    STR R1, [R0, #0x24]
+  93              	
+  94 0014 98109FE5 	    LDR R1, =SVC_Handler
+  95 0018 281080E5 	    STR R1, [R0, #0x28]
+  96              	
+  97 001c 94109FE5 	    LDR R1, =PREF_Handler
+  98 0020 2C1080E5 	    STR R1, [R0, #0x2C]
+  99              	
+ 100 0024 90109FE5 	    LDR R1, =ABT_Handler
+ 101 0028 301080E5 	    STR R1, [R0, #0x30]
+ 102              	
+ 103 002c 78109FE5 	    LDR R1, =_startup
+ 104 0030 341080E5 	    STR R1, [R0, #0x34]
+ 105              	
+ 106 0034 84109FE5 	    LDR R1, =IRQ_Handler
+ 107 0038 381080E5 	    STR R1, [R0, #0x38]
+ 108              	
+ 109 003c 80109FE5 	    LDR R1, =FIQ_Handler
+ 110 0040 3C1080E5 	    STR R1, [R0, #0x3C]
+ 111              	
+ 112              	
+ 113              	/* Limpiamos la sección BSS - Sugerido por Starterware */
+ 114              	_clear_BSS:
+ARM GAS  src/kernel/startup.s 			page 3
+
+
+ 115 0044 7C009FE5 	    LDR R0, =__bss_start__      /* Dirección de inicio de la sección BSS (pública) */
+ 116 0048 7C109FE5 	    LDR R1, =__bss_end__        /* Dirección final de la sección BSS (pública) */
+ 117 004c 0020A0E3 	    MOV R2, #0                  /* Copiamos el valor "0" en R2 */
+ 118 0050 010050E1 	    CMP R0,R1
+ 119 0054 0200000A 	    BEQ _STACK_INIT             /* Para el caso particular en el que bss está vacía (__bss_start_
+ 120              	_LOOP:
+ 121 0058 042080E4 	    STR R2, [R0], #4            /* El contenido de R2 es cargado en "lo apuntado" por R0, luego inc
+ 122 005c 010050E1 	    CMP R0, R1                  /* Comparamos R0 y R1, que poseen las direcciones de interés */
+ 123 0060 FCFFFFDA 	    BLE _LOOP                   /* Mientras la comparación anterior sea falsa, se vuelve a _LOOP *
+ 124              	_STACK_INIT:
+ 125              	    /* Inicializamos los stack pointers para los diferentes modos de funcionamiento */
+ 126 0064 D2F021E3 	    MSR cpsr_c,#(IRQ_MODE | I_BIT |F_BIT)
+ 127 0068 60D09FE5 	    LDR SP,=__irq_stack_top__     /* IRQ stack pointer */
+ 128              	
+ 129 006c D1F021E3 	    MSR cpsr_c,#(FIQ_MODE | I_BIT |F_BIT)
+ 130 0070 5CD09FE5 	    LDR SP,=__fiq_stack_top__     /* FIQ stack pointer */
+ 131              	
+ 132 0074 D3F021E3 	    MSR cpsr_c,#(SVC_MODE | I_BIT |F_BIT)
+ 133 0078 58D09FE5 	    LDR SP,=__svc_stack_top__     /* SVC stack pointer */
+ 134              	
+ 135 007c D7F021E3 	    MSR cpsr_c,#(ABT_MODE | I_BIT |F_BIT)
+ 136 0080 54D09FE5 	    LDR SP,=__abt_stack_top__     /* ABT stack pointer */
+ 137              	
+ 138 0084 DBF021E3 	    MSR cpsr_c,#(UND_MODE | I_BIT |F_BIT)
+ 139 0088 50D09FE5 	    LDR SP,=__und_stack_top__     /* UND stack pointer */
+ 140              	
+ 141 008c DFF021E3 	    MSR cpsr_c,#(SYS_MODE | I_BIT |F_BIT)
+ 142 0090 4CD09FE5 	    LDR SP,=__sys_stack_top__     /* SYS stack pointer */
+ 143              	
+ 144              	    /* Habilitar UART y luego salta al main() */
+ 145 0094 4CA09FE5 	    LDR R10, =init_board
+ 146 0098 0FE0A0E1 	    MOV LR, PC
+ 147 009c 1AFF2FE1 	    BX R10
+ 148              	
+ 149              	idle:
+ 150 00a0 03F020E3 	    WFI
+ 151 00a4 FDFFFFEA 	    B idle
+ 152              	
+ 153 00a8 00000000 	.end
+ 153      00000000 
+ 153      00000000 
+ 153      00000000 
+ 153      00000000 
+ARM GAS  src/kernel/startup.s 			page 4
+
+
+DEFINED SYMBOLS
+src/kernel/startup.s:85     ._start_code:0000000000000000 _startup
+src/kernel/startup.s:55     *ABS*:0000000000000100 _PUB_RAM_SYS_STACK_SIZE
+src/kernel/startup.s:56     *ABS*:0000000000000100 _PUB_RAM_IRQ_STACK_SIZE
+src/kernel/startup.s:57     *ABS*:0000000000000008 _PUB_RAM_FIQ_STACK_SIZE
+src/kernel/startup.s:58     *ABS*:0000000000000008 _PUB_RAM_SVC_STACK_SIZE
+src/kernel/startup.s:59     *ABS*:0000000000000008 _PUB_RAM_ABT_STACK_SIZE
+src/kernel/startup.s:60     *ABS*:0000000000000008 _PUB_RAM_UND_STACK_SIZE
+src/kernel/startup.s:70     *ABS*:0000000000000010 USR_MODE
+src/kernel/startup.s:71     *ABS*:0000000000000011 FIQ_MODE
+src/kernel/startup.s:72     *ABS*:0000000000000012 IRQ_MODE
+src/kernel/startup.s:73     *ABS*:0000000000000013 SVC_MODE
+src/kernel/startup.s:74     *ABS*:0000000000000017 ABT_MODE
+src/kernel/startup.s:75     *ABS*:000000000000001b UND_MODE
+src/kernel/startup.s:76     *ABS*:000000000000001f SYS_MODE
+src/kernel/startup.s:77     *ABS*:0000000000000080 I_BIT
+src/kernel/startup.s:78     *ABS*:0000000000000040 F_BIT
+src/kernel/startup.s:86     ._start_code:0000000000000000 $a
+src/kernel/startup.s:114    ._start_code:0000000000000044 _clear_BSS
+src/kernel/startup.s:124    ._start_code:0000000000000064 _STACK_INIT
+src/kernel/startup.s:120    ._start_code:0000000000000058 _LOOP
+src/kernel/startup.s:149    ._start_code:00000000000000a0 idle
+src/kernel/startup.s:153    ._start_code:00000000000000a8 $d
+
+UNDEFINED SYMBOLS
+__isr_table_start__
+UND_Handler
+SVC_Handler
+PREF_Handler
+ABT_Handler
+IRQ_Handler
+FIQ_Handler
+__bss_start__
+__bss_end__
+__irq_stack_top__
+__fiq_stack_top__
+__svc_stack_top__
+__abt_stack_top__
+__und_stack_top__
+__sys_stack_top__
+init_board

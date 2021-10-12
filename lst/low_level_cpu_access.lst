@@ -1,0 +1,175 @@
+ARM GAS  src/utils/low_level_cpu_access.s 			page 1
+
+
+   1              	/**
+   2              	 * Archivo: low_level_cpu_access.S
+   3              	 * Función: funciones de bajo nivel de acceso al control del CPU
+   4              	 * Autor: Brito Sergio Sebastian
+   5              	 * Referencia: los códigos desarrollados fueron tomados a partir de diferentes referencias y en ba
+   6              	 *             fue darle un enfoque didáctico para el alumno, con comentarios pertinentes y refere
+   7              	 *             Ref. 1: https://github.com/allexoll/BBB-BareMetal
+   8              	 *             Ref. 2: https://github.com/auselen/down-to-the-bone
+   9              	 *             Ref. 3: https://github.com/mvduin/bbb-asm-demo
+  10              	 *             Ref. 4: Starterware de Texas Instruments
+  11              	 *             Ref. 5: AM335x ARM Cortex-A8 - Technical Reference Manual (TRM)
+  12              	 *             Ref. 6: ARM Architectural Reference Manual ARMv7-A and ARMv7-R Edition (ARM)
+  13              	 *             Ref. 7: Instruction Set Assembly Guide for ARMv7 and earlier ARM Architectures (Vers
+  14              	 **/
+  15              	
+  16              	 .section .text_pub
+  17              	
+  18              	.global _irq_enable
+  19              	.global _irq_disable
+  20              	.global _MMU_Enable
+  21              	.global _MMU_Disable
+  22              	.global _LOAD_ISR_Vectors_Base
+  23              	.global _WRITE_8
+  24              	.global _WRITE_16
+  25              	.global _WRITE_32
+  26              	.global _READ_8
+  27              	.global _READ_16
+  28              	.global _READ_32
+  29              	.global _HALT_CPU
+  30              	.global _READ_CPSR_REGS
+  31              	.global _EOI
+  32              	
+  33              	/*
+  34              	 Habilita interrupciones
+  35              	 */
+  36              	.align 4             // Alineado a 4 Bytes
+  37              	_irq_enable:
+  38 0000 4FF07FF5 	    DSB
+  39 0004 00000FE1 	    MRS R0, CPSR
+  40 0008 8000C0E3 	    BIC R0, #0x80
+  41 000c 00F029E1 	    MSR CPSR, R0
+  42 0010 4FF07FF5 	    DSB
+  43 0014 6FF07FF5 	    ISB
+  44 0018 1EFF2FE1 	    BX LR
+  45              	
+  46              	/*
+  47              	 Deshabilita interrupciones
+  48              	 */
+  49 001c 00000000 	.align 4             // Alineado a 4 Bytes
+  50              	_irq_disable:
+  51 0020 4FF07FF5 	    DSB
+  52 0024 00000FE1 	    MRS R0, CPSR
+  53 0028 400080E3 	    ORR R0, #0x40
+  54 002c 00F029E1 	    MSR CPSR, R0
+  55 0030 4FF07FF5 	    DSB
+  56 0034 6FF07FF5 	    ISB
+  57 0038 1EFF2FE1 	    BX LR
+ARM GAS  src/utils/low_level_cpu_access.s 			page 2
+
+
+  58              	
+  59              	/*
+  60              	    Carga la dirección base en la Public RAM de
+  61              	    la tabla de ISR
+  62              	 */
+  63              	_LOAD_ISR_Vectors_Base:
+  64 003c 100F0CEE 	    MCR     P15, #0, R0, C12, C0, #0
+  65 0040 4FF07FF5 	    DSB
+  66 0044 1EFF2FE1 	    BX      LR
+  67              	
+  68              	
+  69              	/*
+  70              	    Realiza una suspensión del uP esperando por un evento
+  71              	    de interrupción para salir de ese estado. Es como la instrucción
+  72              	    HLT de Intel X86.
+  73              	 */
+  74 0048 00000000 	.align 4             // Alineado a 4 Bytes
+  74      00000000 
+  75              	_HALT_CPU:
+  76 0050 03F020E3 	    WFI
+  77 0054 1EFF2FE1 	    BX LR
+  78              	
+  79              	/*
+  80              	    Utilizamos la instrucción WFE (Wait for Event) para generarnos 
+  81              	    un "Magic Breakpoint" propio y poder debuggear el código
+  82              	 */
+  83 0058 00000000 	.align 4             // Alineado a 4 Bytes
+  83      00000000 
+  84              	_BREAKPOINT_DEBUG:
+  85 0060 02F020E3 	    WFE
+  86 0064 1EFF2FE1 	    BX LR
+  87              	
+  88 0068 00000000 	.align 4             // Alineado a 4 Bytes
+  88      00000000 
+  89              	_READ_CPSR_REGS:
+  90 0070 4FF07FF5 	    DSB
+  91 0074 00000FE1 	    MRS R0, CPSR
+  92 0078 1EFF2FE1 	    BX LR
+  93              	
+  94 007c 00000000 	.align 4             // Alineado a 4 Bytes
+  95              	_EOI:
+  96 0080 0100A0E3 	    MOV r0,#0x1
+  97 0084 34109FE5 	    LDR r1,=0x48200000
+  98 0088 480081E5 	    STR r0, [r1, #0x48]
+  99              	
+ 100 008c 1EFF2FE1 	    BX LR
+ 101              	/*
+ 102              	    Funciones de escritura y lecutra de 8, 16 y 32 bits
+ 103              	    Para las funciones _WRITE_X, desde C es: _WRITE_X(DIRECCION, VALOR) 
+ 104              	 */
+ 105              	.align 4             // Alineado a 4 Bytes
+ 106              	_WRITE_8:
+ 107 0090 0010C0E5 	    STRB R1, [R0]       // STR Byte el contenido de R0 en la posición R1
+ 108 0094 1EFF2FE1 	    BX LR
+ 109              	
+ 110              	_WRITE_16:
+ 111 0098 B010C0E1 	    STRH R1, [R0]       // STR HalfWord el contenido de R0 en la posición R1
+ARM GAS  src/utils/low_level_cpu_access.s 			page 3
+
+
+ 112 009c 1EFF2FE1 	    BX LR
+ 113              	
+ 114              	_WRITE_32:
+ 115 00a0 001080E5 	    STR R1, [R0]       // STR Word el contenido de R0 en la posición R1
+ 116 00a4 1EFF2FE1 	    BX LR
+ 117              	
+ 118              	_READ_8:
+ 119 00a8 0000D0E5 	    LDRB R0, [R0]
+ 120 00ac 1EFF2FE1 	    BX LR
+ 121              	
+ 122              	_READ_16:
+ 123 00b0 B000D0E1 	    LDRH R0, [R0]
+ 124 00b4 1EFF2FE1 	    BX LR
+ 125              	
+ 126              	_READ_32:
+ 127 00b8 000090E5 	    LDR R0, [R0]
+ 128 00bc 1EFF2FE1 	    BX LR
+ 128      00002048 
+ARM GAS  src/utils/low_level_cpu_access.s 			page 4
+
+
+DEFINED SYMBOLS
+src/utils/low_level_cpu_access.s:37     .text_pub:0000000000000000 _irq_enable
+src/utils/low_level_cpu_access.s:50     .text_pub:0000000000000020 _irq_disable
+src/utils/low_level_cpu_access.s:63     .text_pub:000000000000003c _LOAD_ISR_Vectors_Base
+src/utils/low_level_cpu_access.s:106    .text_pub:0000000000000090 _WRITE_8
+src/utils/low_level_cpu_access.s:110    .text_pub:0000000000000098 _WRITE_16
+src/utils/low_level_cpu_access.s:114    .text_pub:00000000000000a0 _WRITE_32
+src/utils/low_level_cpu_access.s:118    .text_pub:00000000000000a8 _READ_8
+src/utils/low_level_cpu_access.s:122    .text_pub:00000000000000b0 _READ_16
+src/utils/low_level_cpu_access.s:126    .text_pub:00000000000000b8 _READ_32
+src/utils/low_level_cpu_access.s:75     .text_pub:0000000000000050 _HALT_CPU
+src/utils/low_level_cpu_access.s:89     .text_pub:0000000000000070 _READ_CPSR_REGS
+src/utils/low_level_cpu_access.s:95     .text_pub:0000000000000080 _EOI
+src/utils/low_level_cpu_access.s:38     .text_pub:0000000000000000 $a
+src/utils/low_level_cpu_access.s:49     .text_pub:000000000000001c $d
+src/utils/low_level_cpu_access.s:51     .text_pub:0000000000000020 $a
+src/utils/low_level_cpu_access.s:74     .text_pub:0000000000000048 $d
+src/utils/low_level_cpu_access.s:76     .text_pub:0000000000000050 $a
+src/utils/low_level_cpu_access.s:83     .text_pub:0000000000000058 $d
+src/utils/low_level_cpu_access.s:84     .text_pub:0000000000000060 _BREAKPOINT_DEBUG
+src/utils/low_level_cpu_access.s:85     .text_pub:0000000000000060 $a
+src/utils/low_level_cpu_access.s:88     .text_pub:0000000000000068 $d
+src/utils/low_level_cpu_access.s:90     .text_pub:0000000000000070 $a
+src/utils/low_level_cpu_access.s:94     .text_pub:000000000000007c $d
+src/utils/low_level_cpu_access.s:96     .text_pub:0000000000000080 $a
+src/utils/low_level_cpu_access.s:107    .text_pub:0000000000000090 $a
+src/utils/low_level_cpu_access.s:128    .text_pub:00000000000000c0 $d
+
+UNDEFINED SYMBOLS
+_MMU_Enable
+_MMU_Disable

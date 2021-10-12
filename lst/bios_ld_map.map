@@ -1,0 +1,716 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+context_switch_required
+                    0x4               obj/os_timer_isr.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+public_ram       0x00000000402f0400 0x000000000001b400
+public_stack     0x000000004030b800 0x0000000000001800
+DDR0             0x0000000080000000 0x0000000020000000
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x00000000402f0400                _PUBLIC_RAM_INIT = 0x402f0400
+                0x000000004030b800                _PUBLIC_STACK_INIT = 0x4030b800
+                0x000000004030ce00                _ISR_TABLE = 0x4030ce00
+                0x0000000080000000                _DDR0_INIT = 0x80000000
+                0x0000000080010000                _TEXT_KERNEL_VMA = 0x80010000
+                0x0000000080011000                _BSS_KERNEL_VMA = 0x80011000
+                0x0000000080012000                _DATA_KERNEL_VMA = 0x80012000
+                0x0000000080020000                _TABLE_PAGINATION_VMA = 0x80020000
+                0x0000000080420000                _TABLE_PAGINATION_TASK0_RAM = 0x80420000
+                0x0000000080820000                _TABLE_PAGINATION_TASK1_RAM = 0x80820000
+                0x0000000080c20000                _TABLE_PAGINATION_TASK2_RAM = 0x80c20000
+                0x0000000081020000                _TABLE_PAGINATION_TASK3_RAM = 0x81020000
+                0x0000000082500000                _TEXT_TASK0_RAM = 0x82500000
+                0x0000000082501000                _BSS_TASK0_RAM = 0x82501000
+                0x0000000082502000                _DATA_TASK0_RAM = 0x82502000
+                0x0000000090001000                _STACK_IRQ_TASK0_RAM = 0x90001000
+                0x0000000090002000                _STACK_SYS_TASK0_RAM = 0x90002000
+                0x0000000090003000                _STACK_SVC_TASK0_RAM = 0x90003000
+                0x0000000090004000                _STACK_UND_TASK0_RAM = 0x90004000
+                0x0000000090005000                _STACK_ABT_TASK0_RAM = 0x90005000
+                0x0000000082510000                _TEXT_TASK1_RAM = 0x82510000
+                0x0000000082511000                _BSS_TASK1_RAM = 0x82511000
+                0x0000000082512000                _DATA_TASK1_RAM = 0x82512000
+                0x0000000090011000                _STACK_IRQ_TASK1_RAM = 0x90011000
+                0x0000000090012000                _STACK_SYS_TASK1_RAM = 0x90012000
+                0x0000000090013000                _STACK_SVC_TASK1_RAM = 0x90013000
+                0x0000000090014000                _STACK_UND_TASK1_RAM = 0x90014000
+                0x0000000090015000                _STACK_ABT_TASK1_RAM = 0x90015000
+                0x0000000082520000                _TEXT_TASK2_RAM = 0x82520000
+                0x0000000082521000                _BSS_TASK2_RAM = 0x82521000
+                0x0000000082522000                _DATA_TASK2_RAM = 0x82522000
+                0x0000000090021000                _STACK_IRQ_TASK2_RAM = 0x90021000
+                0x0000000090022000                _STACK_SYS_TASK2_RAM = 0x90022000
+                0x0000000090023000                _STACK_SVC_TASK2_RAM = 0x90023000
+                0x0000000090024000                _STACK_UND_TASK2_RAM = 0x90024000
+                0x0000000090025000                _STACK_ABT_TASK2_RAM = 0x90025000
+                0x0000000082530000                _TEXT_TASK3_RAM = 0x82530000
+                0x0000000082531000                _BSS_TASK3_RAM = 0x82531000
+                0x0000000082532000                _DATA_TASK3_RAM = 0x82532000
+                0x0000000090031000                _STACK_IRQ_TASK3_RAM = 0x90031000
+                0x0000000090032000                _STACK_SYS_TASK3_RAM = 0x90032000
+                0x0000000090033000                _STACK_SVC_TASK3_RAM = 0x90033000
+                0x0000000090034000                _STACK_UND_TASK3_RAM = 0x90034000
+                0x0000000090035000                _STACK_ABT_TASK3_RAM = 0x90035000
+                0x0000000000001000                C_STACK_SIZE = 0x1000
+                0x0000000000000080                IRQ_STACK_SIZE = 0x80
+                0x0000000000000080                FIQ_STACK_SIZE = 0x80
+                0x0000000000000080                SVC_STACK_SIZE = 0x80
+                0x0000000000000080                ABT_STACK_SIZE = 0x80
+                0x0000000000000080                UND_STACK_SIZE = 0x80
+                0x00000000402f0400                . = 0x402f0400
+
+.text           0x00000000402f0400     0x867c
+ *(._reset_vector_code*)
+ ._reset_vector_code
+                0x00000000402f0400        0x4 obj/reset_vector.o
+                0x00000000402f0400                _reset_vector
+ *(._start_code*)
+ ._start_code   0x00000000402f0404       0xec obj/startup.o
+                0x00000000402f0404                _startup
+ *(.text_pub*)
+ .text_pub      0x00000000402f04f0      0x3ec obj/board_init.o
+                0x00000000402f04f0                board_info_print
+                0x00000000402f0798                board_opp_config
+ .text_pub      0x00000000402f08dc      0x2c0 obj/boot_exception_handlers.o
+                0x00000000402f08dc                UND_Handler
+                0x00000000402f08f4                SVC_Handler
+                0x00000000402f090c                PREF_Handler
+                0x00000000402f0a34                ABT_Handler
+                0x00000000402f0b3c                IRQ_Handler
+                0x00000000402f0b84                FIQ_Handler
+ .text_pub      0x00000000402f0b9c      0x610 obj/console_utils.o
+                0x00000000402f0b9c                ConsoleUtilsPrintf
+                0x00000000402f114c                div
+ .text_pub      0x00000000402f11ac      0x4ac obj/ddr.o
+                0x00000000402f11ac                DDR3_Init
+                0x00000000402f15f4                Clean_DDR
+ .text_pub      0x00000000402f1658      0x980 obj/debug_tools.o
+                0x00000000402f1658                PrintRegisters
+                0x00000000402f1808                PrintStack
+                0x00000000402f18d8                PrintGPIORegisters
+                0x00000000402f1dd4                PrintGPIOPortRegister
+                0x00000000402f1e54                PrintIRQRegisters
+                0x00000000402f1eb4                PrintPC
+                0x00000000402f1ee4                PrintCPSR
+                0x00000000402f1f14                PrintMemoryRegion
+ .text_pub      0x00000000402f1fd8      0xadc obj/gpio.o
+                0x00000000402f1fd8                GPIO_Init_Port
+                0x00000000402f210c                GPIO_Get_Port
+                0x00000000402f2168                GPIO_Set_Port
+                0x00000000402f21b8                GPIO_Set_Port_Mode
+                0x00000000402f2214                GPIO_Port_ModuleCtrl
+                0x00000000402f229c                GPIO_Init_Pin
+                0x00000000402f2310                GPIO_Set_Pin
+                0x00000000402f2380                GPIO_Get_Pin
+                0x00000000402f240c                GPIO_Clear_Pin
+                0x00000000402f247c                GPIO_Set_Direction
+                0x00000000402f2534                GPIO_Get_Direction
+                0x00000000402f25c0                GPIO_Set_Status_IRQ
+                0x00000000402f2694                GPIO_Set_LogicLevel_IRQ
+                0x00000000402f27c8                GPIO_SetEdgeDetect_IRQ
+                0x00000000402f28f0                GPIO_SetDebounce
+                0x00000000402f29c4                GPIO_ClearDebounce
+                0x00000000402f2a30                GPIO_SoftReset
+ .text_pub      0x00000000402f2ab4      0x754 obj/i2c.o
+                0x00000000402f2ab4                I2C0_Setup
+                0x00000000402f2c60                I2C_Master_Ctrl
+                0x00000000402f2de8                I2C_Master_SlaveAddrs_Set
+                0x00000000402f2e1c                I2C_Master_Clear_IRQ
+                0x00000000402f2e50                I2C_Set_Data_Count
+                0x00000000402f2e84                I2C_Send_Data
+                0x00000000402f2ec0                I2C_Get_Data
+                0x00000000402f2ef8                I2C0_Setup_InputData
+                0x00000000402f30d8                I2C0_Setup_OutputData
+ .text_pub      0x00000000402f3208      0x194 obj/led.o
+                0x00000000402f3208                LED_init
+                0x00000000402f32dc                LED_on
+                0x00000000402f330c                LED_off
+                0x00000000402f333c                LED_invert
+ *fill*         0x00000000402f339c        0x4 
+ .text_pub      0x00000000402f33a0       0xc4 obj/low_level_cpu_access.o
+                0x00000000402f33a0                _irq_enable
+                0x00000000402f33c0                _irq_disable
+                0x00000000402f33dc                _LOAD_ISR_Vectors_Base
+                0x00000000402f33f0                _HALT_CPU
+                0x00000000402f3410                _READ_CPSR_REGS
+                0x00000000402f3420                _EOI
+                0x00000000402f3430                _WRITE_8
+                0x00000000402f3438                _WRITE_16
+                0x00000000402f3440                _WRITE_32
+                0x00000000402f3448                _READ_8
+                0x00000000402f3450                _READ_16
+                0x00000000402f3458                _READ_32
+ .text_pub      0x00000000402f3464      0x168 obj/memcopy.o
+                0x00000000402f3464                memcopy
+                0x00000000402f34f8                comparememory
+ .text_pub      0x00000000402f35cc      0x4c8 obj/mmu_config.o
+                0x00000000402f35cc                MMU_set_domain
+                0x00000000402f36ac                MMU_enable
+                0x00000000402f375c                MMU_config_ttbr0
+                0x00000000402f37bc                MMU_config_ttbcr
+                0x00000000402f37f4                MMU_config
+                0x00000000402f381c                MMU_Write_Tables
+ .text_pub      0x00000000402f3a94      0x650 obj/mmu_tools.o
+                0x00000000402f3a94                MMU_Get_ID_MMFR0
+                0x00000000402f3abc                MMU_Get_ID_MMFR1
+                0x00000000402f3ae4                MMU_Get_ID_MMFR2
+                0x00000000402f3b0c                MMU_Get_ID_MMFR3
+                0x00000000402f3b34                MMU_Get_TTBCR
+                0x00000000402f3b5c                MMU_Set_TTBCR
+                0x00000000402f3b8c                MMU_Get_DACR
+                0x00000000402f3bb4                MMU_Set_DACR
+                0x00000000402f3be4                MMU_Get_TTBR0
+                0x00000000402f3c0c                MMU_Set_TTBR0
+                0x00000000402f3c3c                MMU_Get_TTBR1
+                0x00000000402f3c64                MMU_Set_TTBR1
+                0x00000000402f3c94                MMU_Get_SCTLR
+                0x00000000402f3cbc                MMU_Set_SCTLR
+                0x00000000402f3cec                MMU_Get_VBAR
+                0x00000000402f3d14                MMU_Set_VBAR
+                0x00000000402f3d3c                MMU_Get_FirstLevelTranslationTable_PhysicalAddress
+                0x00000000402f3da4                MMU_Invalidate_TLB
+                0x00000000402f3dc8                MMU_PrintMappedMemory
+                0x00000000402f40a8                MMU_TranslateVAToPA
+ .text_pub      0x00000000402f40e4      0x170 obj/nvic_config.o
+                0x00000000402f40e4                NVICConfig
+                0x00000000402f41b4                NVIC_IRQ_Unmask
+                0x00000000402f421c                NVIC_Install_IRQ_Handler
+ .text_pub      0x00000000402f4254       0x74 obj/nvic_handlers.o
+                0x00000000402f4254                procIrqHandler
+                0x00000000402f428c                BSP_fiq
+                0x00000000402f4298                BSP_abort
+                0x00000000402f42b0                MBINT0_IRQHandler
+                0x00000000402f42b0                DCAN0_INT1_IRQHandler
+                0x00000000402f42b0                PRU_ICSS_EVTOUT0_IRQHandler
+                0x00000000402f42b0                MCATXINT1_IRQHandler
+                0x00000000402f42b0                TINT3_IRQHandler
+                0x00000000402f42b0                UART4INT_IRQHandler
+                0x00000000402f42b0                GPMCINT_IRQHandler
+                0x00000000402f42b0                USBINT1_IRQHandler
+                0x00000000402f42b0                I2C0INT_IRQHandler
+                0x00000000402f42b0                COMMRX_IRQHandler
+                0x00000000402f42b0                PRU_ICSS_EVTOUT1_IRQHandler_IRQHandler
+                0x00000000402f42b0                TINT0_IRQHandler
+                0x00000000402f42b0                I2C2INT_IRQHandler
+                0x00000000402f42b0                SMRFLX_Core_IRQHandler
+                0x00000000402f42b0                COMMTX_IRQHandler
+                0x00000000402f42b0                LCDCINT_IRQHandler
+                0x00000000402f42b0                TINT5_IRQHandler
+                0x00000000402f42b0                McSPI0INT_IRQHandler
+                0x00000000402f42b0                THRESH_PULSE_3PGSWRXTHR0_IRQHandler
+                0x00000000402f42b0                eQEP2INT_IRQHandler
+                0x00000000402f42b0                ePWM1INT_IRQHandler
+                0x00000000402f42b0                IntDefaultHandler
+                0x00000000402f42b0                TCERRINT2_IRQHandler
+                0x00000000402f42b0                TINT4_IRQHandler
+                0x00000000402f42b0                DMA_INTR_PIN0_IRQHandler
+                0x00000000402f42b0                EDMACOMPINT_IRQHandler
+                0x00000000402f42b0                EMUINT_IRQHandler
+                0x00000000402f42b0                TINT2_IRQHandler
+                0x00000000402f42b0                PRCMINT_IRQHandler
+                0x00000000402f42b0                USNSSINT_IRQHandler
+                0x00000000402f42b0                MISC_PULSE_3PGSWMISC0_IRQHandler
+                0x00000000402f42b0                DMA_INTR_PIN1_IRQHandler
+                0x00000000402f42b0                DCAN0_INT0_IRQHandler
+                0x00000000402f42b0                UART5INT_IRQHandler
+                0x00000000402f42b0                I2C1INT_IRQHandler
+                0x00000000402f42b0                eCAP2INT_IRQHandler
+                0x00000000402f42b0                RTCINT_IRQHandler
+                0x00000000402f42b0                EDMAERRINT_IRQHandler
+                0x00000000402f42b0                TINT1_1MS_IRQHandler
+                0x00000000402f42b0                DCAN1_INT0_IRQHandler
+                0x00000000402f42b0                ePWM0_TZINT_IRQHandler
+                0x00000000402f42b0                RTCALARMINT_IRQHandler
+                0x00000000402f42b0                TINT6_IRQHandler
+                0x00000000402f42b0                DDRERR0_IRQHandler
+                0x00000000402f42b0                GPIOINT3B_IRQHandler
+                0x00000000402f42b0                MMCSD0INT_IRQHandler
+                0x00000000402f42b0                ADC_TSC_GENINT_IRQHandler
+                0x00000000402f42b0                GPIOINT1A_IRQHandler
+                0x00000000402f42b0                GPIOINT1B_IRQHandler
+                0x00000000402f42b0                ePWM2INT_IRQHandler
+                0x00000000402f42b0                L3APPINT_IRQHandler
+                0x00000000402f42b0                PRU_ICSS_EVTOUT2_IRQHandler_IRQHandler
+                0x00000000402f42b0                USBINT0_IRQHandler
+                0x00000000402f42b0                PRU_ICSS_EVTOUT7_IRQHandler_IRQHandler
+                0x00000000402f42b0                BENCH_IRQHandler
+                0x00000000402f42b0                ePWM2_TZINT_IRQHandler
+                0x00000000402f42b0                M3_TXEV_IRQHandler
+                0x00000000402f42b0                ELM_IRQ_IRQHandler
+                0x00000000402f42b0                eCAP0INT_IRQHandler
+                0x00000000402f42b0                UART3INT_IRQHandler
+                0x00000000402f42b0                DCAN1PARITY_IRQHandler
+                0x00000000402f42b0                UART1INT_IRQHandler
+                0x00000000402f42b0                EDMAMPERR_IRQHandler
+                0x00000000402f42b0                SMRFLX_MPU_IRQHandler
+                0x00000000402f42b0                PRU_ICSS_EVTOUT5_IRQHandler_IRQHandler
+                0x00000000402f42b0                DMA_INTR_PIN2_IRQHandler
+                0x00000000402f42b0                MCATXINT0_IRQHandler
+                0x00000000402f42b0                eQEP0INT_IRQHandler
+                0x00000000402f42b0                ePWM1_TZINT_IRQHandler
+                0x00000000402f42b0                WDT1INT_IRQHandler
+                0x00000000402f42b0                MMCSD2INT_IRQHandler
+                0x00000000402f42b0                DCAN0PARITY_IRQHandler
+                0x00000000402f42b0                MCARXINT0_IRQHandler
+                0x00000000402f42b0                GPIOINT0B_IRQHandler
+                0x00000000402f42b0                eCAP1INT_IRQHandler
+                0x00000000402f42b0                ePWM0INT_IRQHandler
+                0x00000000402f42b0                TCERRINT0_IRQHandler
+                0x00000000402f42b0                GPIOINT0A_IRQHandler
+                0x00000000402f42b0                USBWAKEUP_IRQHandler
+                0x00000000402f42b0                McSPI1INT_IRQHandler
+                0x00000000402f42b0                PRU_ICSS_EVTOUT6_IRQHandler_IRQHandler
+                0x00000000402f42b0                GFXINT_IRQHandler
+                0x00000000402f42b0                TINT7_IRQHandler
+                0x00000000402f42b0                UART0INT_IRQHandler
+                0x00000000402f42b0                TCERRINT1_IRQHandler
+                0x00000000402f42b0                GPIOINT3A_IRQHandler
+                0x00000000402f42b0                DCAN1_INT1_IRQHandler
+                0x00000000402f42b0                MCARXINT1_IRQHandler
+                0x00000000402f42b0                eQEP1INT_IRQHandler
+                0x00000000402f42b0                ADC_TSC_PENINT_IRQHandler
+                0x00000000402f42b0                RX_PULSE_3PGSWRXINT0_IRQHandler
+                0x00000000402f42b0                GPIOINT2B_IRQHandler
+                0x00000000402f42b0                UART2INT_IRQHandler
+                0x00000000402f42b0                NMI_IRQHandler
+                0x00000000402f42b0                TX_PULSE_3PGSWTXINT0_IRQHandler
+                0x00000000402f42b0                L3DEBUG_IRQHandler
+                0x00000000402f42b0                MMCSD1INT_IRQHandler
+                0x00000000402f42b0                PRU_ICSS_EVTOUT4_IRQHandler_IRQHandler
+                0x00000000402f42b0                PRU_ICSS_EVTOUT3_IRQHandler_IRQHandler
+ .text_pub      0x00000000402f42c8      0x3ac obj/os.o
+                0x00000000402f42c8                os_init_task_list
+                0x00000000402f4604                os_start
+                0x00000000402f465c                os_context_switch
+ .text_pub      0x00000000402f4674       0x78 obj/os_timer_isr.o
+                0x00000000402f4674                os_timer1_isr
+ .text_pub      0x00000000402f46ec      0x718 obj/pll.o
+                0x00000000402f46ec                PLL_Config
+                0x00000000402f4d7c                PLL_Get_InputClockFreq
+ .text_pub      0x00000000402f4e04      0x178 obj/switch.o
+                0x00000000402f4e04                switch_init
+                0x00000000402f4f48                switch_read
+ .text_pub      0x00000000402f4f7c       0xf0 obj/system_utils.o
+                0x00000000402f4f7c                ControlModule_Set
+                0x00000000402f4fb8                ControlModule_Get
+                0x00000000402f4ff4                ClockModule_Set
+                0x00000000402f5030                ClockModule_Get
+ .text_pub      0x00000000402f506c       0x24 obj/task0.o
+                0x00000000402f506c                task0
+ .text_pub      0x00000000402f5090       0x58 obj/task1.o
+                0x00000000402f5090                task1
+ .text_pub      0x00000000402f50e8       0x58 obj/task2.o
+                0x00000000402f50e8                task2
+ .text_pub      0x00000000402f5140       0x30 obj/task3.o
+                0x00000000402f5140                task3
+ .text_pub      0x00000000402f5170      0x8d8 obj/timertick.o
+                0x00000000402f5170                TimerTick_Init
+                0x00000000402f5364                TimerTick_Start
+                0x00000000402f5384                RTC_Config
+                0x00000000402f54bc                Enable_L3_L4_Clock_Systems
+ .text_pub      0x00000000402f5a48      0x56c obj/tps65217.o
+                0x00000000402f5a48                TPS65217_Power_Status
+                0x00000000402f5d9c                TPS65217_Read
+                0x00000000402f5de8                TPS65217_Write
+                0x00000000402f5f60                TPS65217_V_Update
+ .text_pub      0x00000000402f5fb4      0x7bc obj/uart.o
+                0x00000000402f5fb4                UART_Init
+                0x00000000402f6444                UART_printf
+                0x00000000402f64f8                UART_scanf
+                0x00000000402f65b0                UART_putC
+                0x00000000402f6624                UART_getC
+                0x00000000402f6688                UART_putString
+                0x00000000402f66fc                UART_getString
+ *(.text*)
+ .text          0x00000000402f6770        0x0 obj/board_init.o
+ .text          0x00000000402f6770        0x0 obj/boot_exception_handlers.o
+ .text          0x00000000402f6770        0x0 obj/console_utils.o
+ .text          0x00000000402f6770        0x0 obj/ddr.o
+ .text          0x00000000402f6770        0x0 obj/debug_tools.o
+ .text          0x00000000402f6770        0x0 obj/gpio.o
+ .text          0x00000000402f6770        0x0 obj/i2c.o
+ .text          0x00000000402f6770        0x0 obj/interrupt.o
+ .text          0x00000000402f6770        0x0 obj/led.o
+ .text          0x00000000402f6770        0x0 obj/low_level_cpu_access.o
+ .text          0x00000000402f6770        0x0 obj/main.o
+ .text          0x00000000402f6770        0x0 obj/memcopy.o
+ .text          0x00000000402f6770        0x0 obj/mmu_config.o
+ .text          0x00000000402f6770        0x0 obj/mmu_tools.o
+ .text          0x00000000402f6770        0x0 obj/nvic_config.o
+ .text          0x00000000402f6770        0x0 obj/nvic_handlers.o
+ .text          0x00000000402f6770       0xb0 obj/os.o
+                0x00000000402f6770                os_get_next_context
+ .text          0x00000000402f6820        0x0 obj/os_timer_isr.o
+ .text          0x00000000402f6820        0x0 obj/pll.o
+ .text          0x00000000402f6820        0x0 obj/reset_vector.o
+ .text          0x00000000402f6820        0x0 obj/startup.o
+ .text          0x00000000402f6820        0x0 obj/switch.o
+ .text          0x00000000402f6820        0x0 obj/system_utils.o
+ .text          0x00000000402f6820        0x0 obj/task0.o
+ .text          0x00000000402f6820        0x0 obj/task1.o
+ .text          0x00000000402f6820        0x0 obj/task2.o
+ .text          0x00000000402f6820        0x0 obj/task3.o
+ .text          0x00000000402f6820        0x0 obj/timertick.o
+ .text          0x00000000402f6820        0x0 obj/tps65217.o
+ .text          0x00000000402f6820        0x0 obj/uart.o
+ *(.rodata*)
+ .rodata        0x00000000402f6820      0x85f obj/board_init.o
+ *fill*         0x00000000402f707f        0x1 
+ .rodata        0x00000000402f7080      0x38f obj/boot_exception_handlers.o
+ *fill*         0x00000000402f740f        0x1 
+ .rodata        0x00000000402f7410       0x4a obj/console_utils.o
+ *fill*         0x00000000402f745a        0x2 
+ .rodata        0x00000000402f745c      0xa6f obj/debug_tools.o
+ *fill*         0x00000000402f7ecb        0x1 
+ .rodata        0x00000000402f7ecc       0x10 obj/gpio.o
+ .rodata        0x00000000402f7edc       0x10 obj/i2c.o
+ .rodata        0x00000000402f7eec       0x27 obj/interrupt.o
+ *fill*         0x00000000402f7f13        0x1 
+ .rodata        0x00000000402f7f14       0x10 obj/led.o
+ .rodata        0x00000000402f7f24       0x8f obj/main.o
+ *fill*         0x00000000402f7fb3        0x1 
+ .rodata        0x00000000402f7fb4       0x34 obj/memcopy.o
+ .rodata        0x00000000402f7fe8       0x10 obj/mmu_config.o
+ .rodata        0x00000000402f7ff8      0x14c obj/mmu_tools.o
+ .rodata        0x00000000402f8144       0xbe obj/nvic_config.o
+ *fill*         0x00000000402f8202        0x2 
+ .rodata        0x00000000402f8204      0x210 obj/nvic_handlers.o
+                0x00000000402f8214                IRQ_Vectors
+ .rodata        0x00000000402f8414       0x46 obj/os.o
+ *fill*         0x00000000402f845a        0x2 
+ .rodata        0x00000000402f845c       0x2e obj/os_timer_isr.o
+ *fill*         0x00000000402f848a        0x2 
+ .rodata        0x00000000402f848c       0x10 obj/pll.o
+ .rodata        0x00000000402f849c       0x10 obj/switch.o
+ .rodata        0x00000000402f84ac       0x2d obj/task1.o
+ *fill*         0x00000000402f84d9        0x3 
+ .rodata        0x00000000402f84dc       0x2d obj/task2.o
+ *fill*         0x00000000402f8509        0x3 
+ .rodata        0x00000000402f850c       0x1a obj/task3.o
+ *fill*         0x00000000402f8526        0x2 
+ .rodata        0x00000000402f8528       0x10 obj/timertick.o
+ .rodata        0x00000000402f8538      0x51b obj/tps65217.o
+ *fill*         0x00000000402f8a53        0x1 
+ .rodata        0x00000000402f8a54       0x28 obj/uart.o
+
+.glue_7         0x00000000402f8a7c        0x0
+ .glue_7        0x00000000402f8a7c        0x0 linker stubs
+
+.glue_7t        0x00000000402f8a7c        0x0
+ .glue_7t       0x00000000402f8a7c        0x0 linker stubs
+
+.vfp11_veneer   0x00000000402f8a7c        0x0
+ .vfp11_veneer  0x00000000402f8a7c        0x0 linker stubs
+
+.v4_bx          0x00000000402f8a7c        0x0
+ .v4_bx         0x00000000402f8a7c        0x0 linker stubs
+
+text_pub        0x00000000402f8a80      0x6f0
+ text_pub       0x00000000402f8a80      0x6e8 obj/board_init.o
+                0x00000000402f8a80                init_board
+ text_pub.__stub
+                0x00000000402f9168        0x8 linker stubs
+
+.iplt           0x00000000402f9170        0x0
+ .iplt          0x00000000402f9170        0x0 obj/board_init.o
+
+.data           0x00000000402f9170     0x507c
+ *(.data*)
+ .data          0x00000000402f9170        0x0 obj/board_init.o
+ .data          0x00000000402f9170        0x0 obj/boot_exception_handlers.o
+ .data          0x00000000402f9170        0x0 obj/console_utils.o
+ .data          0x00000000402f9170        0x0 obj/ddr.o
+ .data          0x00000000402f9170        0x0 obj/debug_tools.o
+ .data          0x00000000402f9170        0x0 obj/gpio.o
+ .data          0x00000000402f9170        0x0 obj/i2c.o
+ .data          0x00000000402f9170        0x0 obj/interrupt.o
+ .data          0x00000000402f9170        0x0 obj/led.o
+ .data          0x00000000402f9170        0x0 obj/low_level_cpu_access.o
+ .data          0x00000000402f9170        0x0 obj/main.o
+ .data          0x00000000402f9170        0x0 obj/memcopy.o
+ .data          0x00000000402f9170        0x0 obj/mmu_config.o
+ .data          0x00000000402f9170        0x0 obj/mmu_tools.o
+ .data          0x00000000402f9170        0x0 obj/nvic_config.o
+ .data          0x00000000402f9170        0x0 obj/nvic_handlers.o
+ .data          0x00000000402f9170     0x5078 obj/os.o
+                0x00000000402f9170                task_list
+ .data          0x00000000402fe1e8        0x0 obj/os_timer_isr.o
+ .data          0x00000000402fe1e8        0x0 obj/pll.o
+ .data          0x00000000402fe1e8        0x0 obj/reset_vector.o
+ .data          0x00000000402fe1e8        0x0 obj/startup.o
+ .data          0x00000000402fe1e8        0x0 obj/switch.o
+ .data          0x00000000402fe1e8        0x0 obj/system_utils.o
+ .data          0x00000000402fe1e8        0x0 obj/task0.o
+ .data          0x00000000402fe1e8        0x0 obj/task1.o
+ .data          0x00000000402fe1e8        0x4 obj/task2.o
+ .data          0x00000000402fe1ec        0x0 obj/task3.o
+ .data          0x00000000402fe1ec        0x0 obj/timertick.o
+ .data          0x00000000402fe1ec        0x0 obj/tps65217.o
+ .data          0x00000000402fe1ec        0x0 obj/uart.o
+
+.igot.plt       0x00000000402fe1ec        0x0
+ .igot.plt      0x00000000402fe1ec        0x0 obj/board_init.o
+
+.bss            0x00000000402fe1ec       0x10
+                0x00000000402fe1ec                . = ALIGN (0x4)
+                0x00000000402fe1ec                __bss_start__ = .
+ *(.bss*)
+ .bss           0x00000000402fe1ec        0x0 obj/board_init.o
+ .bss           0x00000000402fe1ec        0x0 obj/boot_exception_handlers.o
+ .bss           0x00000000402fe1ec        0x0 obj/console_utils.o
+ .bss           0x00000000402fe1ec        0x0 obj/ddr.o
+ .bss           0x00000000402fe1ec        0x0 obj/debug_tools.o
+ .bss           0x00000000402fe1ec        0x0 obj/gpio.o
+ .bss           0x00000000402fe1ec        0x0 obj/i2c.o
+ .bss           0x00000000402fe1ec        0x0 obj/interrupt.o
+ .bss           0x00000000402fe1ec        0x0 obj/led.o
+ .bss           0x00000000402fe1ec        0x0 obj/low_level_cpu_access.o
+ .bss           0x00000000402fe1ec        0x0 obj/main.o
+ .bss           0x00000000402fe1ec        0x0 obj/memcopy.o
+ .bss           0x00000000402fe1ec        0x0 obj/mmu_config.o
+ .bss           0x00000000402fe1ec        0x0 obj/mmu_tools.o
+ .bss           0x00000000402fe1ec        0x0 obj/nvic_config.o
+ .bss           0x00000000402fe1ec        0x0 obj/nvic_handlers.o
+ .bss           0x00000000402fe1ec        0x4 obj/os.o
+ .bss           0x00000000402fe1f0        0x4 obj/os_timer_isr.o
+ .bss           0x00000000402fe1f4        0x0 obj/pll.o
+ .bss           0x00000000402fe1f4        0x0 obj/reset_vector.o
+ .bss           0x00000000402fe1f4        0x0 obj/startup.o
+ .bss           0x00000000402fe1f4        0x0 obj/switch.o
+ .bss           0x00000000402fe1f4        0x0 obj/system_utils.o
+ .bss           0x00000000402fe1f4        0x0 obj/task0.o
+ .bss           0x00000000402fe1f4        0x4 obj/task1.o
+ .bss           0x00000000402fe1f8        0x0 obj/task2.o
+ .bss           0x00000000402fe1f8        0x0 obj/task3.o
+ .bss           0x00000000402fe1f8        0x0 obj/timertick.o
+ .bss           0x00000000402fe1f8        0x0 obj/tps65217.o
+ .bss           0x00000000402fe1f8        0x0 obj/uart.o
+                0x00000000402fe1f8                __bss_end__ = .
+ COMMON         0x00000000402fe1f8        0x4 obj/os_timer_isr.o
+                0x00000000402fe1f8                context_switch_required
+                0x00000000402fe1fc                _HANDLERS_LMA = .
+
+.kernel_handler
+                0x0000000080000000       0x98 load address 0x00000000402fe1fc
+ *(.kernel_handler*)
+ .kernel_handler
+                0x0000000080000000       0x74 obj/interrupt.o
+                0x0000000080000000                GPIOINT2A_IRQHandler
+ *fill*         0x0000000080000074        0x4 
+ .kernel_handler.__stub
+                0x0000000080000078       0x20 linker stubs
+                0x0000000000000098                _kernel_handler_size_ = SIZEOF (.kernel_handler)
+                0x00000000402fe294                _TEXT_KERNEL_LMA = (_kernel_handler_size_ + LOADADDR (.kernel_handler))
+
+.kernel_text    0x0000000080010000       0x70 load address 0x00000000402fe294
+ *(.kernel_text*)
+ .kernel_text   0x0000000080010000       0x50 obj/main.o
+                0x0000000080010000                main
+ .kernel_text.__stub
+                0x0000000080010050       0x20 linker stubs
+                0x0000000000000070                _kernel_text_size_ = SIZEOF (.kernel_text)
+                0x00000000402fe304                _BSS_KERNEL_LMA = (_kernel_text_size_ + LOADADDR (.kernel_text))
+
+.rel.dyn        0x0000000080010070        0x0 load address 0x00000000402fe304
+ .rel.iplt      0x0000000080010070        0x0 obj/board_init.o
+
+.kernel_bss     0x0000000080011000        0x0 load address 0x00000000402fe304
+ *(.kernel_bss*)
+                0x0000000000000000                _kernel_bss_size_ = SIZEOF (.kernel_bss)
+                0x00000000402fe304                _DATA_KERNEL_LMA = (_kernel_bss_size_ + LOADADDR (.kernel_bss))
+
+.kernel_data    0x0000000080012000        0x0 load address 0x00000000402fe304
+ *(.kernel_data*)
+                0x0000000000000000                _kernel_data_size_ = SIZEOF (.kernel_data)
+                0x00000000402fe304                _TABLE_PAGINATION_LMA = (_kernel_data_size_ + LOADADDR (.kernel_data))
+
+.kernel_table   0x0000000080020000        0x0 load address 0x00000000402fe304
+ *(.kernel_table*)
+                0x0000000000000000                _kernel_table_size_ = SIZEOF (.kernel_table)
+                0x00000000402fe304                _TABLE_PAGINATION_TASK0_PUBLIC_RAM = (_kernel_table_size_ + LOADADDR (.kernel_table))
+
+.kernel_table_task0
+                0x0000000080420000        0x0 load address 0x00000000402fe304
+ *(.kernel_table_task0*)
+                0x0000000000000000                _kernel_table_task0_size_ = SIZEOF (.kernel_table_task0)
+                0x00000000402fe304                _TABLE_PAGINATION_TASK1_PUBLIC_RAM = (_kernel_table_task0_size_ + LOADADDR (.kernel_table_task0))
+
+.kernel_table_task1
+                0x0000000080820000        0x0 load address 0x00000000402fe304
+ *(.kernel_table_task1*)
+                0x0000000000000000                _kernel_table_task1_size_ = SIZEOF (.kernel_table_task1)
+                0x00000000402fe304                _TABLE_PAGINATION_TASK2_PUBLIC_RAM = (_kernel_table_task1_size_ + LOADADDR (.kernel_table_task1))
+
+.kernel_table_task2
+                0x0000000080c20000        0x0 load address 0x00000000402fe304
+ *(.kernel_table_task2*)
+                0x0000000000000000                _kernel_table_task2_size_ = SIZEOF (.kernel_table_task2)
+                0x00000000402fe304                _TABLE_PAGINATION_TASK3_PUBLIC_RAM = (_kernel_table_task2_size_ + LOADADDR (.kernel_table_task2))
+
+.kernel_table_task3
+                0x0000000081020000        0x0 load address 0x00000000402fe304
+ *(.kernel_table_task3*)
+                0x0000000000000000                _kernel_table_task3_size_ = SIZEOF (.kernel_table_task3)
+
+.stack          0x000000004030b800     0x1280
+                0x000000004030b800                __stack_start__ = .
+                0x000000004030b880                . = (. + IRQ_STACK_SIZE)
+ *fill*         0x000000004030b800       0x80 
+                0x000000004030b880                . = ALIGN (0x4)
+                0x000000004030b880                __irq_stack_top__ = .
+                0x000000004030b900                . = (. + FIQ_STACK_SIZE)
+ *fill*         0x000000004030b880       0x80 
+                0x000000004030b900                . = ALIGN (0x4)
+                0x000000004030b900                __fiq_stack_top__ = .
+                0x000000004030b980                . = (. + SVC_STACK_SIZE)
+ *fill*         0x000000004030b900       0x80 
+                0x000000004030b980                . = ALIGN (0x4)
+                0x000000004030b980                __svc_stack_top__ = .
+                0x000000004030ba00                . = (. + ABT_STACK_SIZE)
+ *fill*         0x000000004030b980       0x80 
+                0x000000004030ba00                . = ALIGN (0x4)
+                0x000000004030ba00                __abt_stack_top__ = .
+                0x000000004030ba80                . = (. + UND_STACK_SIZE)
+ *fill*         0x000000004030ba00       0x80 
+                0x000000004030ba80                . = ALIGN (0x4)
+                0x000000004030ba80                __und_stack_top__ = .
+                0x000000004030ca80                . = (. + C_STACK_SIZE)
+ *fill*         0x000000004030ba80     0x1000 
+                0x000000004030ca80                . = ALIGN (0x4)
+                0x000000004030ca80                __sys_stack_top__ = .
+                0x000000004030ca80                __stack_end__ = .
+                0x000000004030ce00                . = _ISR_TABLE
+                0x000000004030ce00                __isr_table_start__ = .
+LOAD obj/board_init.o
+LOAD obj/boot_exception_handlers.o
+LOAD obj/console_utils.o
+LOAD obj/ddr.o
+LOAD obj/debug_tools.o
+LOAD obj/gpio.o
+LOAD obj/i2c.o
+LOAD obj/interrupt.o
+LOAD obj/led.o
+LOAD obj/low_level_cpu_access.o
+LOAD obj/main.o
+LOAD obj/memcopy.o
+LOAD obj/mmu_config.o
+LOAD obj/mmu_tools.o
+LOAD obj/nvic_config.o
+LOAD obj/nvic_handlers.o
+LOAD obj/os.o
+LOAD obj/os_timer_isr.o
+LOAD obj/pll.o
+LOAD obj/reset_vector.o
+LOAD obj/startup.o
+LOAD obj/switch.o
+LOAD obj/system_utils.o
+LOAD obj/task0.o
+LOAD obj/task1.o
+LOAD obj/task2.o
+LOAD obj/task3.o
+LOAD obj/timertick.o
+LOAD obj/tps65217.o
+LOAD obj/uart.o
+OUTPUT(obj/bios.elf elf32-littlearm)
+LOAD linker stubs
+
+.comment        0x0000000000000000       0x59
+ .comment       0x0000000000000000       0x59 obj/board_init.o
+                                         0x5a (size before relaxing)
+ .comment       0x0000000000000059       0x5a obj/boot_exception_handlers.o
+ .comment       0x0000000000000059       0x5a obj/console_utils.o
+ .comment       0x0000000000000059       0x5a obj/ddr.o
+ .comment       0x0000000000000059       0x5a obj/debug_tools.o
+ .comment       0x0000000000000059       0x5a obj/gpio.o
+ .comment       0x0000000000000059       0x5a obj/i2c.o
+ .comment       0x0000000000000059       0x5a obj/interrupt.o
+ .comment       0x0000000000000059       0x5a obj/led.o
+ .comment       0x0000000000000059       0x5a obj/main.o
+ .comment       0x0000000000000059       0x5a obj/memcopy.o
+ .comment       0x0000000000000059       0x5a obj/mmu_config.o
+ .comment       0x0000000000000059       0x5a obj/mmu_tools.o
+ .comment       0x0000000000000059       0x5a obj/nvic_config.o
+ .comment       0x0000000000000059       0x5a obj/nvic_handlers.o
+ .comment       0x0000000000000059       0x5a obj/os.o
+ .comment       0x0000000000000059       0x5a obj/os_timer_isr.o
+ .comment       0x0000000000000059       0x5a obj/pll.o
+ .comment       0x0000000000000059       0x5a obj/switch.o
+ .comment       0x0000000000000059       0x5a obj/system_utils.o
+ .comment       0x0000000000000059       0x5a obj/task0.o
+ .comment       0x0000000000000059       0x5a obj/task1.o
+ .comment       0x0000000000000059       0x5a obj/task2.o
+ .comment       0x0000000000000059       0x5a obj/task3.o
+ .comment       0x0000000000000059       0x5a obj/timertick.o
+ .comment       0x0000000000000059       0x5a obj/tps65217.o
+ .comment       0x0000000000000059       0x5a obj/uart.o
+
+.ARM.attributes
+                0x0000000000000000       0x35
+ .ARM.attributes
+                0x0000000000000000       0x37 obj/board_init.o
+ .ARM.attributes
+                0x0000000000000037       0x37 obj/boot_exception_handlers.o
+ .ARM.attributes
+                0x000000000000006e       0x37 obj/console_utils.o
+ .ARM.attributes
+                0x00000000000000a5       0x37 obj/ddr.o
+ .ARM.attributes
+                0x00000000000000dc       0x37 obj/debug_tools.o
+ .ARM.attributes
+                0x0000000000000113       0x37 obj/gpio.o
+ .ARM.attributes
+                0x000000000000014a       0x37 obj/i2c.o
+ .ARM.attributes
+                0x0000000000000181       0x37 obj/interrupt.o
+ .ARM.attributes
+                0x00000000000001b8       0x37 obj/led.o
+ .ARM.attributes
+                0x00000000000001ef       0x1c obj/low_level_cpu_access.o
+ .ARM.attributes
+                0x000000000000020b       0x37 obj/main.o
+ .ARM.attributes
+                0x0000000000000242       0x37 obj/memcopy.o
+ .ARM.attributes
+                0x0000000000000279       0x37 obj/mmu_config.o
+ .ARM.attributes
+                0x00000000000002b0       0x37 obj/mmu_tools.o
+ .ARM.attributes
+                0x00000000000002e7       0x37 obj/nvic_config.o
+ .ARM.attributes
+                0x000000000000031e       0x37 obj/nvic_handlers.o
+ .ARM.attributes
+                0x0000000000000355       0x37 obj/os.o
+ .ARM.attributes
+                0x000000000000038c       0x37 obj/os_timer_isr.o
+ .ARM.attributes
+                0x00000000000003c3       0x37 obj/pll.o
+ .ARM.attributes
+                0x00000000000003fa       0x16 obj/reset_vector.o
+ .ARM.attributes
+                0x0000000000000410       0x1a obj/startup.o
+ .ARM.attributes
+                0x000000000000042a       0x37 obj/switch.o
+ .ARM.attributes
+                0x0000000000000461       0x37 obj/system_utils.o
+ .ARM.attributes
+                0x0000000000000498       0x37 obj/task0.o
+ .ARM.attributes
+                0x00000000000004cf       0x37 obj/task1.o
+ .ARM.attributes
+                0x0000000000000506       0x37 obj/task2.o
+ .ARM.attributes
+                0x000000000000053d       0x37 obj/task3.o
+ .ARM.attributes
+                0x0000000000000574       0x37 obj/timertick.o
+ .ARM.attributes
+                0x00000000000005ab       0x37 obj/tps65217.o
+ .ARM.attributes
+                0x00000000000005e2       0x37 obj/uart.o
